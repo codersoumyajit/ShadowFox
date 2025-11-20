@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="static/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.rtl.min.css"
+      crossorigin="anonymous"
+    />
+    <title>Car Price Predictor</title>
+  </head>
+  <body class="bg-dark text-light">
+    <div class="container">
+      <div class="row">
+        <div class="card mt-5">
+          <div class="card-header text-center">
+            <h1>Welcome to Car Price Predictor</h1>
+          </div>
+          <div class="card-body">
+            <form id="predictForm" method="post">
+              <div class="mb-3 text-center">
+                <label><b>Select Car Name</b></label>
+                <select
+                  class="form-control"
+                  id="CarName"
+                  name="CarName"
+                  required
+                >
+                  {% for Car_Name in companies %}
+                  <option value="{{ Car_Name }}">{{ Car_Name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="mb-3 text-center">
+                <label><b>Select Year of Purchase</b></label>
+                <select class="form-control" id="year" name="year" required>
+                  {% for Year in year %}
+                  <option value="{{ Year }}">{{ Year }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="mb-3 text-center">
+                <label><b>Select Fuel Type</b></label>
+                <select
+                  class="form-control"
+                  id="fuel_type"
+                  name="fuel_type"
+                  required
+                >
+                  {% for Fuel_Type in fuel_type %}
+                  <option value="{{ Fuel_Type }}">{{ Fuel_Type }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="mb-3 text-center">
+                <label><b>Enter number of kilometers travelled</b></label>
+                <input
+                  class="form-control"
+                  type="number"
+                  id="kilo_driven"
+                  name="kilo_driven"
+                  placeholder="Enter km driven"
+                  required
+                />
+              </div>
+
+              <div class="text-center">
+                <button
+                  class="btn btn-primary form-control"
+                  type="button"
+                  onclick="send_data()"
+                >
+                  Predict Price
+                </button>
+              </div>
+            </form>
+
+            <div class="mt-4 text-center">
+              <h4 id="prediction">Prediction: Rs.-</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function send_data() {
+        var form = document.getElementById("predictForm");
+        var fd = new FormData(form);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/predict", true);
+
+        document.getElementById("prediction").innerHTML = "Predicting...";
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState == XMLHttpRequest.DONE) {
+            document.getElementById("prediction").innerHTML =
+              "Prediction: Rs. " + xhr.responseText;
+          }
+        };
+        xhr.send(fd);
+      }
+    </script>
+  </body>
+</html>
